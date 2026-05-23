@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_SCAN_FOR_MODULES off)
 
-set(MINIMAL_QT_VERSION 6.7)
+set(MINIMAL_QT_VERSION 6.9)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
@@ -37,6 +37,7 @@ target_sources(Qqsp PRIVATE
 	callbacks_gui.h
 	comtools.cpp
 	comtools.h
+	consts.hpp
 	main.cpp
 	mainwindow.cpp
 	mainwindow.h
@@ -94,10 +95,11 @@ if(Qt6WebEngineWidgets_FOUND)
 endif()
 
 if (Qt6LinguistTools_FOUND)
-	qt_add_translations(Qqsp
-		TS_FILES
-			Qqsp.en.ts Qqsp.ru.ts Qqsp.uk.ts
-			qt_uk.ts qtbase_uk.ts
+	qt_add_translations(
+		TARGETS Qqsp
+		SOURCE_TARGETS Qqsp
+		TS_FILES Qqsp.en.ts Qqsp.ru.ts Qqsp.uk.ts
+		MERGE_QT_TRANSLATIONS
 	)
 endif()
 

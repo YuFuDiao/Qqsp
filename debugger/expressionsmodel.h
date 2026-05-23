@@ -9,6 +9,7 @@ class QSettings;
 namespace Debugger {
 	class ExpressionsModel: public QAbstractTableModel {
 		using Base = QAbstractTableModel;
+		Q_OBJECT
 
 	public:
 		explicit ExpressionsModel(QObject* parent = nullptr);

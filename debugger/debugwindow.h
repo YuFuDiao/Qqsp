@@ -15,6 +15,7 @@ namespace Debugger {
 
 	class DebugWindow: public QMainWindow {
 		using base = QMainWindow;
+		Q_OBJECT
 
 	public:
 		DebugWindow(QAction* toggleVisibilityAction, QWidget* parent = nullptr);

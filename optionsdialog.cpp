@@ -1,5 +1,7 @@
 #include "optionsdialog.h"
 
+#include "comtools.h"
+#include "consts.hpp"
 #include "mainwindow.h"
 
 #include <QColorDialog>
@@ -7,9 +9,12 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QFontDialog>
+#include <QLocale>
 #include <QTranslator>
 
 #include "ui_optionsdialog.h"
+
+using namespace Qt::StringLiterals;
 
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent)
@@ -53,26 +58,13 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	ui->checkBox_CaseInsensitiveFilePath->setVisible(false);
 #endif
 
-	QDirIterator qmIt(QCoreApplication::applicationDirPath(), QStringList() << QLatin1String("%1*.qm").arg(QCoreApplication::applicationName()), QDir::Files);
-	while (qmIt.hasNext()) {
-		qmIt.next();
-		QFileInfo finfo = qmIt.fileInfo();
-		QTranslator translator;
-		if (translator.load(finfo.completeBaseName(), finfo.absolutePath())) {
-			ui->comboBox_language->addItem(translator.translate("__LANG__", "__LANGNAME__"), QVariant(translator.translate("__LANG__", "__LANGID__")));
-		}
+	ui->comboBox_language->addItem(tr("System", "System-default language"), Qqsp::SettingsValues::Application::langidSystem);
+	for (const QString& langId: QSPTools::availableTranslations(QCoreApplication::applicationDirPath())) {
+		ui->comboBox_language->addItem(QLocale{langId}.nativeLanguageName(), langId);
 	}
-	QDirIterator qmItRC(":/i18n/", QStringList() << QLatin1String("%1*.qm").arg(QCoreApplication::applicationName()), QDir::Files);
-	while (qmItRC.hasNext()) {
-		qmItRC.next();
-		QFileInfo finfo = qmItRC.fileInfo();
-		QTranslator translator;
-		if (translator.load(finfo.completeBaseName(), finfo.absolutePath())) {
-			QString fileLangId = translator.translate("__LANG__", "__LANGID__");
-			int index = ui->comboBox_language->findData(fileLangId);
-			if (index == -1) {
-				ui->comboBox_language->addItem(translator.translate("__LANG__", "__LANGNAME__"), QVariant(translator.translate("__LANG__", "__LANGID__")));
-			}
+	for (const QString& langId: QSPTools::availableTranslations(":/i18n"_L1)) {
+		if (ui->comboBox_language->findData(langId) == -1) {
+			ui->comboBox_language->addItem(QLocale{langId}.nativeLanguageName(), langId);
 		}
 	}
 	langid = mw->GetLangID();

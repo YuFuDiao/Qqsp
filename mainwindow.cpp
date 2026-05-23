@@ -2,6 +2,7 @@
 
 #include "callbacks_gui.h"
 #include "comtools.h"
+#include "consts.hpp"
 #include "debugger/debugwindow.h"
 #include "optionsdialog.h"
 #include "qspstr.h"
@@ -35,49 +36,49 @@
 
 #include <qqsp-config.h>
 
+using namespace Qt::StringLiterals;
+
 namespace {
 	namespace SettingsKeys {
-		using namespace Qt::StringLiterals;
-
 		namespace Groups {
-			constexpr QLatin1StringView mainWindow{"mainWindow"_L1};
-			constexpr QLatin1StringView application{"application"_L1};
-			constexpr QLatin1StringView debugger{"debugger"_L1};
+			constexpr QLatin1StringView mainWindow{"mainWindow"};
+			constexpr QLatin1StringView application{"application"};
+			constexpr QLatin1StringView debugger{"debugger"};
 		}
 
 		namespace MainWindow {
-			constexpr QLatin1StringView geometry{"geometry"_L1};
-			constexpr QLatin1StringView windowState{"windowState"_L1};
-			constexpr QLatin1StringView isMaximized{"isMaximized"_L1};
-			constexpr QLatin1StringView isFullScreen{"isFullScreen"_L1};
-			constexpr QLatin1StringView showCaptions{"showCaptions"_L1};
+			constexpr QLatin1StringView geometry{"geometry"};
+			constexpr QLatin1StringView windowState{"windowState"};
+			constexpr QLatin1StringView isMaximized{"isMaximized"};
+			constexpr QLatin1StringView isFullScreen{"isFullScreen"};
+			constexpr QLatin1StringView showCaptions{"showCaptions"};
 		}
 
 		namespace Application {
-			constexpr QLatin1StringView showPlainText{"isShowPlainText"_L1};
-			constexpr QLatin1StringView lastPath{"lastPath"_L1};
-			constexpr QLatin1StringView perGameConfig{"perGameConfig"_L1};
+			constexpr QLatin1StringView showPlainText{"isShowPlainText"};
+			constexpr QLatin1StringView lastPath{"lastPath"};
+			constexpr QLatin1StringView perGameConfig{"perGameConfig"};
 
-			constexpr QLatin1StringView useFontSize{"isUseFontSize"_L1};
-			constexpr QLatin1StringView fontSize{"fontSize"_L1};
-			constexpr QLatin1StringView useFont{"isUseFont"_L1};
-			constexpr QLatin1StringView font{"font"_L1};
+			constexpr QLatin1StringView useFontSize{"isUseFontSize"};
+			constexpr QLatin1StringView fontSize{"fontSize"};
+			constexpr QLatin1StringView useFont{"isUseFont"};
+			constexpr QLatin1StringView font{"font"};
 
-			constexpr QLatin1StringView useBgColor{"isUseBackColor"_L1};
-			constexpr QLatin1StringView useLinkColor{"isUseLinkColor"_L1};
-			constexpr QLatin1StringView useFontColor{"isUseFontColor"_L1};
-			constexpr QLatin1StringView bgColor{"backColor"_L1};
-			constexpr QLatin1StringView linkColor{"linkColor"_L1};
-			constexpr QLatin1StringView fontColor{"fontColor"_L1};
-			constexpr QLatin1StringView disableVideo{"disableVideo"_L1};
-			constexpr QLatin1StringView videoFix{"videoFix"_L1};
-			constexpr QLatin1StringView lastGame{"lastGame"_L1};
-			constexpr QLatin1StringView autostartLastGame{"autostartLastGame"_L1};
-			constexpr QLatin1StringView volume{"volume"_L1};
-			constexpr QLatin1StringView showHotkeys{"isShowHotkeys"_L1};
-			constexpr QLatin1StringView allowHTML5Extras{"isAllowHTML5Extras"_L1};
-			constexpr QLatin1StringView useCaseInsensitiveFilePath{"useCaseInsensitiveFilePath"_L1};
-			constexpr QLatin1StringView langid{"language"_L1};
+			constexpr QLatin1StringView useBgColor{"isUseBackColor"};
+			constexpr QLatin1StringView useLinkColor{"isUseLinkColor"};
+			constexpr QLatin1StringView useFontColor{"isUseFontColor"};
+			constexpr QLatin1StringView bgColor{"backColor"};
+			constexpr QLatin1StringView linkColor{"linkColor"};
+			constexpr QLatin1StringView fontColor{"fontColor"};
+			constexpr QLatin1StringView disableVideo{"disableVideo"};
+			constexpr QLatin1StringView videoFix{"videoFix"};
+			constexpr QLatin1StringView lastGame{"lastGame"};
+			constexpr QLatin1StringView autostartLastGame{"autostartLastGame"};
+			constexpr QLatin1StringView volume{"volume"};
+			constexpr QLatin1StringView showHotkeys{"isShowHotkeys"};
+			constexpr QLatin1StringView allowHTML5Extras{"isAllowHTML5Extras"};
+			constexpr QLatin1StringView useCaseInsensitiveFilePath{"useCaseInsensitiveFilePath"};
+			constexpr QLatin1StringView langid{"language"};
 		} // namespace Application
 	} // namespace SettingsKeys
 } // namespace
@@ -89,8 +90,8 @@ MainWindow::MainWindow(QWidget* parent)
 	_ui->setupUi(this);
 
 	resize(600, 450);
-	setWindowTitle(QSP_LOGO);
-	setObjectName(QStringLiteral("MainWindow"));
+	setWindowTitle(Qqsp::logo);
+	setObjectName("MainWindow"_L1);
 
 #ifdef QT_WEBENGINEWIDGETS_LIB
 	//    qwuri = new QspWebEngineUrlRequestInterceptor();
@@ -116,7 +117,7 @@ MainWindow::MainWindow(QWidget* parent)
 	_ui->mainToolBar->setVisible(false);
 
 	m_timer = new QTimer(this);
-	m_timer->setObjectName(QStringLiteral("m_timer"));
+	m_timer->setObjectName("m_timer"_L1);
 	connect(m_timer, &QTimer::timeout, this, &MainWindow::OnTimer);
 	m_savedGamePath.clear();
 	m_isQuit = false;
@@ -158,10 +159,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 	m_isAllowHTML5Extras = true;
 
-	langid = QObject::tr("__LANGID__");
-	if (langid == QStringLiteral("__LANGID__")) {
-		langid = QLocale::system().name();
-	}
+	langid = Qqsp::SettingsValues::Application::langidSystem;
 
 	setupDockWindows();
 
@@ -172,9 +170,9 @@ MainWindow::MainWindow(QWidget* parent)
 	ApplyLinkColor(m_linkColor);
 	ApplyFont(m_font, 0, 0);
 
-	QFileInfo settingsFile(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+	QFileInfo settingsFile(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	if (settingsFile.exists() && settingsFile.isFile()) {
-		LoadSettings(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+		LoadSettings(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	} else {
 		LoadSettings();
 	}
@@ -189,9 +187,9 @@ MainWindow::MainWindow(QWidget* parent)
 	QSPCallBacks::SetAllowHTML5Extras(m_isAllowHTML5Extras);
 	SetOverallVolume(m_volume);
 
-	QFileInfo gameFile(QApplication::applicationDirPath() + "/standalone_content/" + QSP_GAME);
+	QFileInfo gameFile(QApplication::applicationDirPath() + "/standalone_content/"_L1 + Qqsp::game);
 	if (gameFile.exists() && gameFile.isFile()) {
-		OpenGameFile(QApplication::applicationDirPath() + "/standalone_content/" + QSP_GAME);
+		OpenGameFile(QApplication::applicationDirPath() + "/standalone_content/"_L1 + Qqsp::game);
 	} else {
 		if (autostartLastGame) {
 			OpenGameFile(lastGame);
@@ -860,9 +858,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	if (!m_configPath.isEmpty()) {
 		SaveSettings(m_configPath);
 	}
-	QFileInfo settingsFile(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+	QFileInfo settingsFile(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	if (settingsFile.exists() && settingsFile.isFile()) {
-		SaveSettings(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+		SaveSettings(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	} else {
 		SaveSettings();
 	}
@@ -950,8 +948,8 @@ void MainWindow::OpenGameFile(const QString& path)
 	if (!path.isEmpty()) {
 		QFileInfo fileName(path);
 		QSPCallBacks::m_gamePath = fileName.absolutePath();
-		if (!QSPCallBacks::m_gamePath.endsWith("/")) {
-			QSPCallBacks::m_gamePath += "/";
+		if (!QSPCallBacks::m_gamePath.endsWith('/'_L1)) {
+			QSPCallBacks::m_gamePath += '/'_L1;
 		}
 		_mainDescTextBox->SetGamePath(QSPCallBacks::m_gamePath);
 		_objectsListBox->SetGamePath(QSPCallBacks::m_gamePath);
@@ -962,12 +960,12 @@ void MainWindow::OpenGameFile(const QString& path)
 			lastGame = path;
 			QFileInfo file(path);
 			m_gameFile = file.absoluteFilePath();
-			QString configString(QSPCallBacks::m_gamePath + QSP_CONFIG);
+			QString configString(QSPCallBacks::m_gamePath + Qqsp::config);
 			if (configString != m_configPath && perGameConfig) {
 				if (m_configPath.isEmpty()) {
-					QFileInfo settingsFile(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+					QFileInfo settingsFile(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 					if (settingsFile.exists() && settingsFile.isFile()) {
-						SaveSettings(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+						SaveSettings(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 					} else {
 						SaveSettings();
 					}
@@ -1161,7 +1159,7 @@ void MainWindow::OnOpenQuickSavedGame()
 	if (!m_isGameOpened) {
 		return;
 	}
-	QString path = m_path + QSP_QUICKSAVE;
+	QString path = m_path + Qqsp::quicksave;
 	QFileInfo fileInfo(path);
 	if (fileInfo.exists() && fileInfo.isFile()) {
 		if (!QSPCallBacks::OpenGameStatusEx(QSPStr(path), true)) {
@@ -1178,7 +1176,7 @@ void MainWindow::OnQuickSaveGame()
 	if (!m_isGameOpened) {
 		return;
 	}
-	QString path = m_path + QSP_QUICKSAVE;
+	QString path = m_path + Qqsp::quicksave;
 	if (QSPCallBacks::SaveGameStatusEx(QSPStr(path), true)) {
 		m_savedGamePath = path;
 	} else {
@@ -1193,9 +1191,9 @@ void MainWindow::OnOptions()
 	if (!m_configPath.isEmpty()) {
 		SaveSettings(m_configPath);
 	}
-	QFileInfo settingsFile(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+	QFileInfo settingsFile(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	if (settingsFile.exists() && settingsFile.isFile()) {
-		SaveSettings(QApplication::applicationDirPath() + "/" + QSP_CUSTOM_CONFIG);
+		SaveSettings(QApplication::applicationDirPath() + '/'_L1 + Qqsp::customConfig);
 	} else {
 		SaveSettings();
 	}

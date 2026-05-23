@@ -6,6 +6,7 @@
 #include <QColor>
 #include <QHash>
 #include <QString>
+#include <QStringList>
 
 #include <vector>
 
@@ -28,6 +29,9 @@ public:
 	static bool reloadGame(const QString& gameFilePath);
 
 	static bool useCaseInsensitiveFilePath;
+
+	static QStringList availableTranslations(const QString& directory);
+	static QString selectAvailableTranslation(const QStringList& translationDirectories, const QStringList& userPreferences);
 
 private:
 	static QHash<QString, QString> file_list;

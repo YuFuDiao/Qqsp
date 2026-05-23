@@ -1,10 +1,22 @@
 #include "comtools.h"
 
+#include "consts.hpp"
+
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
+
+using namespace Qt::StringLiterals;
+
+namespace {
+	QString langId(const QString& qmFileName)
+	{
+		// qqsp.langid.qm
+		return qmFileName.mid(Qqsp::appname.size() + 1, qmFileName.lastIndexOf('.'_L1) - Qqsp::appname.size() - 2);
+	}
+} // namespace
 
 QHash<QString, QString> QSPTools::file_list;
 QString QSPTools::file_path;
@@ -263,4 +275,29 @@ bool QSPTools::reloadGame(const QString& gameFilePath)
 		return false;
 	}
 	return QSPOpenSavedGameFromData(buf.data(), requiredBufSize, QSP_TRUE) == QSP_TRUE;
+}
+
+QStringList QSPTools::availableTranslations(const QString& directory)
+{
+	QStringList result;
+	QDirIterator qmItRC(directory, QStringList() << (Qqsp::appname + ".*.qm"_L1), QDir::Files);
+	while (qmItRC.hasNext()) {
+		qmItRC.next();
+		QFileInfo finfo = qmItRC.fileInfo();
+		result.push_back(langId(finfo.completeBaseName()));
+	}
+	return result;
+}
+
+QString QSPTools::selectAvailableTranslation(const QStringList& translationDirectories, const QStringList& userPreferences)
+{
+	for (const QString& directory: translationDirectories) {
+		const QStringList available{availableTranslations(directory)};
+		for (const QString& preferred: userPreferences) {
+			if (available.contains(preferred)) {
+				return "%1/%2.%3.qm"_L1.arg(directory, Qqsp::appname, preferred);
+			}
+		}
+	}
+	return {};
 }

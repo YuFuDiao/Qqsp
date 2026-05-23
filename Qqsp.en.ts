@@ -2,270 +2,439 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>MainWindow</name>
+    <name>DebugWindow</name>
     <message>
-        <location filename="mainwindow.ui" line="79"/>
-        <source>ToolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="356"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="32"/>
-        <source>&amp;Quest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="134"/>
-        <source>Open game...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="146"/>
-        <source>Restart game</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="158"/>
-        <source>Exit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="41"/>
-        <source>&amp;Game</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="14"/>
+        <location filename="debugger/debugwindow.ui" line="14"/>
         <source>MainWindow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="137"/>
-        <source>Alt+O</source>
+        <location filename="debugger/debugwindow.ui" line="31"/>
+        <location filename="debugger/debugwindow.ui" line="106"/>
+        <source>Expressions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="149"/>
-        <source>Alt+N</source>
+        <location filename="debugger/debugwindow.ui" line="47"/>
+        <source>Run code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="161"/>
-        <source>Alt+X</source>
+        <location filename="debugger/debugwindow.ui" line="56"/>
+        <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="170"/>
-        <source>Open saved game...</source>
+        <location filename="debugger/debugwindow.ui" line="70"/>
+        <location filename="debugger/debugwindow.ui" line="99"/>
+        <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="173"/>
-        <source>Ctrl+O</source>
+        <location filename="debugger/debugwindow.ui" line="93"/>
+        <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="182"/>
-        <source>Save game...</source>
+        <location filename="debugger/debugwindow.ui" line="121"/>
+        <source>toolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="143"/>
+        <source>&amp;Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="151"/>
+        <source>C&amp;lose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="159"/>
+        <source>Copy all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="167"/>
+        <source>Refresh expressions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="184"/>
+        <source>actionAutoRefreshExpressions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="187"/>
+        <source>Automatically refresh expression values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="198"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="201"/>
+        <source>Ins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="215"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="218"/>
+        <source>Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="229"/>
+        <source>Copy value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="232"/>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="240"/>
+        <source>Copy All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="243"/>
+        <source>Ctrl+Shift+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="251"/>
+        <source>Remove All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/debugwindow.ui" line="254"/>
+        <source>Shift+Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Debugger::DebugWindow</name>
+    <message>
+        <location filename="debugger/debugwindow.cpp" line="44"/>
+        <source>QSP debug tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Debugger::ExpressionsModel</name>
+    <message>
+        <location filename="debugger/expressionsmodel.cpp" line="137"/>
+        <source>Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="debugger/expressionsmodel.cpp" line="138"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="mainwindow.ui" line="97"/>
+        <source>ToolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="399"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="47"/>
+        <source>&amp;Quest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="57"/>
+        <source>&amp;Game</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="23"/>
+        <source>MainWindow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="70"/>
+        <source>&amp;Show / Hide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="121"/>
+        <source>Ob&amp;jects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="188"/>
+        <source>&amp;Open game...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="191"/>
-        <source>Quick Load</source>
+        <source>Alt+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="194"/>
-        <source>F9</source>
+        <location filename="mainwindow.ui" line="200"/>
+        <source>&amp;Restart game</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="203"/>
-        <source>Quick Save</source>
+        <source>Alt+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="279"/>
+        <location filename="mainwindow.ui" line="212"/>
+        <source>&amp;Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="215"/>
+        <source>Alt+X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="224"/>
+        <source>&amp;Open saved game...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="236"/>
+        <source>&amp;Save game...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="244"/>
+        <source>&amp;Quick Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="255"/>
+        <source>Q&amp;uick Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="266"/>
+        <source>&amp;Captions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="269"/>
+        <source>Ctrl+7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="277"/>
+        <source>&amp;Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="326"/>
+        <source>&amp;Hotkeys for actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="329"/>
+        <source>Ctrl+9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="337"/>
+        <source>&amp;Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="348"/>
+        <source>Web Inspector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="351"/>
+        <source>Ctrl+Shift+I</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="356"/>
+        <source>Re&amp;load game</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="359"/>
+        <source>Save game state, reload game file, load the saved state</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="227"/>
+        <source>Ctrl+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="247"/>
+        <source>F9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="340"/>
         <source>Ctrl+8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="50"/>
+        <location filename="mainwindow.ui" line="66"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="54"/>
-        <source>Show / Hide</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="206"/>
+        <location filename="mainwindow.ui" line="258"/>
         <source>F5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="214"/>
-        <source>Captions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="217"/>
-        <source>Ctrl+6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="229"/>
+        <location filename="mainwindow.ui" line="280"/>
         <source>Ctrl+Alt+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="240"/>
+        <location filename="mainwindow.ui" line="288"/>
+        <source>&amp;Display HTML code as plain text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="291"/>
         <source>Alt+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="252"/>
+        <location filename="mainwindow.ui" line="300"/>
+        <source>&amp;About...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="303"/>
         <source>Ctrl+H</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="264"/>
+        <location filename="mainwindow.ui" line="312"/>
+        <source>&amp;Window / Fullscreen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="315"/>
         <source>F11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="276"/>
-        <source>Hotkeys for actions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="261"/>
-        <source>Window / Fullscreen mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="237"/>
-        <source>Display HTML code as plain text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="226"/>
-        <source>Options...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="68"/>
+        <location filename="mainwindow.ui" line="86"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="249"/>
-        <source>About...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="711"/>
+        <location filename="mainwindow.ui" line="142"/>
         <source>Main desc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="106"/>
-        <location filename="mainwindow.cpp" line="717"/>
-        <source>Objects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="115"/>
-        <location filename="mainwindow.cpp" line="729"/>
+        <location filename="mainwindow.ui" line="130"/>
         <source>Actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="742"/>
+        <location filename="mainwindow.ui" line="154"/>
         <source>Additional desc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="757"/>
+        <location filename="mainwindow.ui" line="166"/>
         <source>Input area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="768"/>
+        <location filename="mainwindow.ui" line="175"/>
         <source>Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1014"/>
-        <location filename="mainwindow.cpp" line="1016"/>
-        <location filename="mainwindow.cpp" line="1024"/>
+        <location filename="mainwindow.cpp" line="1065"/>
+        <location filename="mainwindow.cpp" line="1068"/>
+        <location filename="mainwindow.cpp" line="1076"/>
         <source>Select game file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1014"/>
-        <location filename="mainwindow.cpp" line="1016"/>
-        <location filename="mainwindow.cpp" line="1024"/>
+        <location filename="mainwindow.cpp" line="1065"/>
+        <location filename="mainwindow.cpp" line="1068"/>
+        <location filename="mainwindow.cpp" line="1076"/>
         <source>QSP games (*.qsp *.gam)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="callbacks_gui.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="1213"/>
+        <source>&lt;h2&gt;Qqsp&lt;/h2&gt;&lt;p&gt;Copyright &amp;copy; 2017-2019, Sonnix&lt;br/&gt;Qt6 port by ezsh, 2025&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="callbacks_gui.cpp" line="350"/>
         <source>Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="callbacks_gui.cpp" line="402"/>
+        <location filename="callbacks_gui.cpp" line="421"/>
         <source>Input data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1058"/>
-        <location filename="mainwindow.cpp" line="1060"/>
-        <location filename="callbacks_gui.cpp" line="459"/>
+        <location filename="callbacks_gui.cpp" line="482"/>
+        <location filename="mainwindow.cpp" line="1119"/>
+        <location filename="mainwindow.cpp" line="1122"/>
         <source>Select saved game file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1058"/>
-        <location filename="mainwindow.cpp" line="1060"/>
-        <location filename="mainwindow.cpp" line="1077"/>
-        <location filename="mainwindow.cpp" line="1079"/>
-        <location filename="callbacks_gui.cpp" line="459"/>
-        <location filename="callbacks_gui.cpp" line="493"/>
+        <location filename="callbacks_gui.cpp" line="482"/>
+        <location filename="callbacks_gui.cpp" line="521"/>
+        <location filename="mainwindow.cpp" line="1119"/>
+        <location filename="mainwindow.cpp" line="1122"/>
+        <location filename="mainwindow.cpp" line="1141"/>
+        <location filename="mainwindow.cpp" line="1144"/>
         <source>Saved game files (*.sav)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1077"/>
-        <location filename="mainwindow.cpp" line="1079"/>
-        <location filename="callbacks_gui.cpp" line="493"/>
+        <location filename="callbacks_gui.cpp" line="521"/>
+        <location filename="mainwindow.cpp" line="1141"/>
+        <location filename="mainwindow.cpp" line="1144"/>
         <source>Select file to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1145"/>
+        <location filename="mainwindow.cpp" line="1211"/>
         <source>, </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1146"/>
-        <source>&lt;h2&gt;Qqsp&lt;/h2&gt;&lt;p&gt;Copyright &amp;copy; 2017-2019, Sonnix&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1148"/>
+        <location filename="mainwindow.cpp" line="1215"/>
         <source>&lt;p&gt;Application version: %1&lt;br&gt;QSP library version: %2&lt;br&gt;Qt library version: %3&lt;br&gt;Application compilation date: %4&lt;br&gt;Library compilation date: %5&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;Application version: %1&lt;br&gt;QSP library version: %2&lt;br&gt;Application compilation date: %3&lt;br&gt;Library compilation date: %4&lt;/p&gt;</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1149"/>
+        <location filename="mainwindow.cpp" line="1218"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
@@ -356,17 +525,21 @@
         <source>Use case insensitive paths</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="optionsdialog.cpp" line="61"/>
+        <source>System</source>
+        <comment>System-default language</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="main.cpp" line="28"/>
         <source>__LANGNAME__</source>
-        <translation>English</translation>
+        <translation type="vanished">English</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="29"/>
-        <location filename="mainwindow.cpp" line="111"/>
+        <location filename="mainwindow.cpp" line="162"/>
         <source>__LANGID__</source>
         <translation>en_US</translation>
     </message>
@@ -374,7 +547,7 @@
 <context>
     <name>QspExecWebEngineUrlSchemeHandler</name>
     <message>
-        <location filename="qspexecwebengineurlschemehandler.cpp" line="53"/>
+        <location filename="qspexecwebengineurlschemehandler.cpp" line="50"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -382,7 +555,7 @@
 <context>
     <name>QspImgCanvas</name>
     <message>
-        <location filename="qspimgcanvas.cpp" line="9"/>
+        <location filename="qspimgcanvas.cpp" line="10"/>
         <source>Image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -390,31 +563,44 @@
 <context>
     <name>QspWebChannel</name>
     <message>
-        <location filename="qspwebchannel.cpp" line="39"/>
+        <location filename="qspwebchannel.cpp" line="38"/>
         <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WebInspectorWindow</name>
+    <message>
+        <location filename="webinspectorwindow.ui" line="14"/>
+        <source>Web Inspector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="webinspectorwindow.ui" line="25"/>
+        <source>Main</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="webinspectorwindow.ui" line="30"/>
+        <source>Additional</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>__LANG__</name>
     <message>
-        <location filename="optionsdialog.cpp" line="60"/>
-        <location filename="optionsdialog.cpp" line="74"/>
         <source>__LANGNAME__</source>
-        <translation>English</translation>
+        <translation type="vanished">English</translation>
     </message>
     <message>
-        <location filename="optionsdialog.cpp" line="60"/>
-        <location filename="optionsdialog.cpp" line="70"/>
-        <location filename="optionsdialog.cpp" line="74"/>
         <source>__LANGID__</source>
-        <translation>en_US</translation>
+        <translation type="vanished">en_US</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="main.cpp" line="59"/>
+        <location filename="main.cpp" line="65"/>
         <source>Game file to open.</source>
         <translation type="unfinished"></translation>
     </message>
