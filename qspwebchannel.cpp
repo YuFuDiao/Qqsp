@@ -26,14 +26,14 @@ void QspWebChannel::ShowError()
 	const QSPErrorInfo errorInfo{QSPGetLastErrorData()};
 	QString desc = QSPTools::qspStrToQt(errorInfo.ErrorDesc);
 	if (errorInfo.LocName.Str) {
-		errorMessage = QString("Location: %1\nArea: %2\nLine: %3\nCode: %4\nDesc: %5")
+		errorMessage = QString("位置: %1\n区域: %2\n行号: %3\n代码: %4\n描述: %5")
 		                   .arg(QSPTools::qspStrToQt(errorInfo.LocName))
-		                   .arg(errorInfo.ActIndex < 0 ? QString("on visit") : QString("on action"))
+		                   .arg(errorInfo.ActIndex < 0 ? QString("访问时") : QString("动作时"))
 		                   .arg(errorInfo.IntLineNum)
 		                   .arg(errorInfo.ErrorNum)
 		                   .arg(desc);
 	} else {
-		errorMessage = QString("Code: %1\nDesc: %2").arg(errorInfo.ErrorNum).arg(desc);
+		errorMessage = QString("代码: %1\n描述: %2").arg(errorInfo.ErrorNum).arg(desc);
 	}
 	QMessageBox dialog(QMessageBox::Critical, tr("Error"), errorMessage, QMessageBox::Ok);
 	dialog.exec();

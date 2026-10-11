@@ -61,3 +61,4 @@ core
 config.pri
 config.in
 .qmake.cache
+dist/

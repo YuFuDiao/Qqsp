@@ -85,6 +85,17 @@ jobs:
             -DUSE_INSTALLED_ONIGURUMA:BOOL=ON
           cmake --build build
 
+      - name: Localize QSP engine error strings (zh_CN)
+        run: |
+          $cmd = $null
+          foreach ($c in @("python", "py", "python3")) {
+            $p = Get-Command $c -ErrorAction SilentlyContinue
+            if ($p) { & $p.Source --version *> $null; if ($LASTEXITCODE -eq 0) { $cmd = $p.Source; break } }
+          }
+          if (-not $cmd) { throw "no working python interpreter" }
+          & $cmd tools/patch_qsp_zh.py "${{ env.qsp_path }}"
+          if ($LASTEXITCODE -ne 0) { throw "QSP engine localization failed" }
+
       - name: Build Qqsp
         run: |
           $qspCfg = Get-ChildItem -Path "${{ env.qsp_path }}" -Recurse -Filter "QspConfig.cmake" -ErrorAction SilentlyContinue | Select-Object -First 1

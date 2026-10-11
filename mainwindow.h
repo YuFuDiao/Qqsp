@@ -32,7 +32,7 @@
 #	include "qsptextbox.h"
 #endif
 
-#define QSP_LOGO          "Qt Quest Soft Player"
+#define QSP_LOGO          "QSP·小说播放器"
 #define QSP_APPNAME       "Qqsp"
 #define QSP_CONFIG        "qqsp.ini"
 #define QSP_CUSTOM_CONFIG "custom.ini"

@@ -1,0 +1,28 @@
+Division by zero!	除以零
+Type mismatch!	类型不匹配
+Stack overflow!	堆栈溢出
+Too many items in expression!	表达式中的项过多
+File not found!	文件未找到
+Can't load file!	无法载入文件
+Game not loaded!	游戏未载入
+Sign [:] not found!	缺少符号 [:]
+Can't add file!	无法添加文件
+Can't add action!	无法添加动作
+Sign [=] not found!	缺少符号 [=]
+Location not found!	未找到位置
+[end] not found!	未找到 [end]
+Label not found!	未找到标签
+Incorrect variable's name!	变量名不正确
+Quote not found!	未找到引号
+Bracket not found!	未找到左括号
+Brackets not found!	未找到括号
+Syntax error!	语法错误
+Unknown action!	未知动作
+Incorrect arguments' count!	参数个数不正确
+Can't add object!	无法添加对象
+Can't add menu's item!	无法添加菜单项
+Too many variables!	变量过多
+Regular expression's error!	正则表达式错误
+Code not found!	未找到代码
+[to] not found!	未找到 [to]
+Unknown error!	未知错误

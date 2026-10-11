@@ -9,6 +9,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_SCAN_FOR_MODULES off)
 
+# UTF-8 Chinese literals: MSVC must not reinterpret them as ANSI.
+if (MSVC)
+    add_compile_options(/utf-8)
+endif()
+
 set(MINIMAL_QT_VERSION 6.7)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
@@ -133,6 +138,7 @@ if (WIN32)
 endif()
 
 install(TARGETS Qqsp DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES Qqsp.zh_CN.qm Qqsp.zh-CN.qm DESTINATION "${CMAKE_INSTALL_BINDIR}")
 if (LINUX)
 	install(FILES Qqsp.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 	install(FILES qsp.mime DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/mime/packages" RENAME qsp.xml)
