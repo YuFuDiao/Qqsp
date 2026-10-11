@@ -1,6 +1,9 @@
 name: CI - Windows
 
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
 
 permissions: {}
 
@@ -84,14 +87,16 @@ jobs:
 
       - name: Build Qqsp
         run: |
-          $env:CXXFLAGS+="/DQT_FORCE_ASSERTS /WX"
+          $qspCfg = Get-ChildItem -Path "${{ env.qsp_path }}" -Recurse -Filter "QspConfig.cmake" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($null -eq $qspCfg) { throw "QspConfig.cmake not found under qsp_path" }
+          Write-Host "Qsp_DIR = $($qspCfg.DirectoryName)"
           cmake `
             -B build `
             -G "Ninja" `
             -DCMAKE_BUILD_TYPE=RelWithDebInfo `
             -DCMAKE_INSTALL_PREFIX="${{ env.install_path }}" `
             -DCMAKE_TOOLCHAIN_FILE="${{ env.vcpkg_path }}/scripts/buildsystems/vcpkg.cmake" `
-            -DQsp_DIR="${{ env.qsp_path }}/build"
+            -DQsp_DIR="$($qspCfg.DirectoryName)"
           cmake --build build
 
       - name: Prepare build artifacts
