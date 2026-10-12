@@ -189,7 +189,7 @@ void QSPCallBacks::RefreshInt(QSP_BOOL isForced, QSP_BOOL isNewDesc)
 		for (const QSPObjectItem& li: objects) {
 			m_frame->GetObjects()->AddItem(
 				QSPTools::GetCaseInsensitiveFilePath(m_gamePath, QSPTools::qspStrToQt(li.Image)),
-				"%1 [%2]"_L1.arg(QSPTools::qspStrToQt(li.Name), QSPTools::qspStrToQt(li.Title)));
+				"%1"_L1.arg(QSPTools::qspStrToQt(li.Name)));
 		}
 		m_frame->GetObjects()->EndItems();
 	}

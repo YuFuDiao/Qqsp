@@ -19,6 +19,13 @@ VideoLabel::VideoLabel(QString path, QString filename, QWidget* parent)
 	mediaPlayer.setSource(QUrl::fromLocalFile(m_path + m_filename));
 	mediaPlayer.setLoops(QMediaPlayer::Infinite);
 	mediaPlayer.setVideoOutput(this);
+	connect(videoSink(), &QVideoSink::videoFrameChanged, this, [this](const QVideoFrame& frame) {
+		if (!m_medialLoaded) {
+			m_medialLoaded = true;
+			m_resolution = frame.size();
+			emit medialLoaded();
+		}
+	});
 	mediaPlayer.play();
 	//    while(!vfp.hasFrame && mediaPlayer.error() != QMediaPlayer::InvalidMedia && vfp.error() == QAbstractVideoSurface::NoError)
 	//    {
@@ -40,5 +47,5 @@ bool VideoLabel::videoError()
 
 QSize VideoLabel::getResolution()
 {
-	return mediaPlayer.videoTracks().front().value(QMediaMetaData::Resolution).toSize();
+	return m_resolution;
 }

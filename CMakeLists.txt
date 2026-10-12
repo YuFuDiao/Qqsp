@@ -138,7 +138,7 @@ if (WIN32)
 endif()
 
 install(TARGETS Qqsp DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES Qqsp.zh_CN.qm Qqsp.zh-CN.qm DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES Qqsp.zh_CN.qm DESTINATION "${CMAKE_INSTALL_BINDIR}")
 if (LINUX)
 	install(FILES Qqsp.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 	install(FILES qsp.mime DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/mime/packages" RENAME qsp.xml)

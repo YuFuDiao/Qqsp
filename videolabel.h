@@ -3,6 +3,8 @@
 
 #include <QMediaPlayer>
 #include <QSize>
+#include <QVideoFrame>
+#include <QVideoSink>
 #include <QVideoWidget>
 
 class VideoLabel: public QVideoWidget {
@@ -25,6 +27,7 @@ private:
 	QMediaPlayer mediaPlayer;
 	bool m_videoError;
 	bool m_medialLoaded;
+	QSize m_resolution;
 };
 
 #endif // VIDEOLABEL_H
