@@ -1,6 +1,7 @@
 #include "qspwebengineurlschemehandler.h"
 
 #include "comtools.h"
+#include "diaglog.h"
 
 #include <QBuffer>
 #include <QFileInfo>
@@ -58,6 +59,7 @@ static QByteArray contentTypeForPath(const QString& filePath, const QByteArray& 
 
 void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* request)
 {
+	qqspDiag(QStringLiteral("REQ %1").arg(request->requestUrl().toString()));
 	const QUrl url = request->requestUrl();
 	QString url_str = url.toString();
 	QBuffer* buffer = new QBuffer;
@@ -102,6 +104,7 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 				"QWebChannel(qt.webChannelTransport, function(channel) { \nqsp = channel.objects.qsp; \n}); \n});\n</script>\n");
 			replystr.append(m_head);
 			replystr.append("</head>\n<body>\n");
+			qqspDiag(QStringLiteral("PAGE html bodyLen=%1").arg(m_text.length()));
 			replystr.append(m_text);
 			replystr.append("</body>\n</html>");
 
@@ -124,7 +127,8 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		const QFileInfo fileInfo(filePath);
 		if (!fileInfo.exists() || !fileInfo.isFile()) {
 			buffer->close();
-			request->fail(QWebEngineUrlRequestJob::UrlNotFound);
+			qqspDiag(QStringLiteral("NOTFOUND %1").arg(filePath));
+		request->fail(QWebEngineUrlRequestJob::UrlNotFound);
 			return;
 		}
 
@@ -144,7 +148,8 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		};
 		if (mediaSuffixes.contains(suffix)) {
 			buffer->close();
-			request->redirect(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
+			qqspDiag(QStringLiteral("REDIRECT file:/%1").arg(fileInfo.absoluteFilePath()));
+		request->redirect(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
 			return;
 		}
 
@@ -154,7 +159,8 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		QFile file(filePath);
 		if (!file.open(QIODevice::ReadOnly)) {
 			buffer->close();
-			request->fail(QWebEngineUrlRequestJob::UrlNotFound);
+			qqspDiag(QStringLiteral("NOTFOUND %1").arg(filePath));
+		request->fail(QWebEngineUrlRequestJob::UrlNotFound);
 			return;
 		}
 		buffer->write(file.readAll());
@@ -172,6 +178,7 @@ void QspWebEngineUrlSchemeHandler::SetPlainText(const QString& text)
 
 void QspWebEngineUrlSchemeHandler::SetHtml(const QString& text)
 {
+		qqspDiag(QStringLiteral("SetHtml len=%1").arg(text.length()));
 	m_isUseHtml = true;
 	m_text = text;
 }

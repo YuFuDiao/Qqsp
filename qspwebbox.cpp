@@ -8,6 +8,7 @@
 #include <QWebEngineSettings>
 // #include <QTimer>
 #include "comtools.h"
+#include "diaglog.h"
 
 #include <QEventLoop>
 
@@ -65,6 +66,7 @@ void QspWebBox::SetIsHtml(bool isHtml)
 
 void QspWebBox::RefreshUI(bool isScroll)
 {
+		qqspDiag(QStringLiteral("RefreshUI len=%1 html=%2 plain=%3").arg(m_text.length()).arg(m_isUseHtml).arg(showPlainText));
 	if (m_isQuit) {
 		return;
 	}
@@ -145,9 +147,11 @@ void QspWebBox::RefreshUI(bool isScroll)
 		Q_EMIT pageChanged();
 		QEventLoop loop;
 		connect(page(), &QWebEnginePage::loadFinished, &loop, &QEventLoop::quit);
+		qqspDiag(QStringLiteral("WebBox initial load"));
 		page()->load(QUrl("qsp:/"));
 		loop.exec();
 	}
+	qqspDiag(QStringLiteral("WebBox reload"));
 	page()->triggerAction(QWebEnginePage::ReloadAndBypassCache);
 
 	// QTimer wtimer;

@@ -2,6 +2,7 @@
 
 #include "callbacks_gui.h"
 #include "comtools.h"
+#include "diaglog.h"
 #include "debugger/debugwindow.h"
 #include "optionsdialog.h"
 #include "qspstr.h"
@@ -957,8 +958,10 @@ void MainWindow::OpenGameFile(const QString& path)
 		_objectsListBox->SetGamePath(QSPCallBacks::m_gamePath);
 		_actionsListBox->SetGamePath(QSPCallBacks::m_gamePath);
 		_descTextBox->SetGamePath(QSPCallBacks::m_gamePath);
+		qqspDiag(QStringLiteral("loadGameFile %1").arg(path));
 		if (QSPTools::loadGameFile((path))) {
 			m_isGameOpened = true;
+			qqspDiag(QStringLiteral("GAME OPENED"));
 			lastGame = path;
 			QFileInfo file(path);
 			m_gameFile = file.absoluteFilePath();
