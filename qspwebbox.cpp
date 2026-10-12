@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPalette>
+#include <QUrl>
 #include <QScrollBar>
 #include <QWebEngineSettings>
 // #include <QTimer>
@@ -121,6 +122,41 @@ void QspWebBox::RefreshUI(bool isScroll)
 			startIndex = str.indexOf("<video", endIndex, Qt::CaseInsensitive);
 		}
 		text.append(str.mid(copypos));
+		// Chromium will not play media served through the custom qsp: scheme in
+		// this configuration (it reports MEDIA_ERR_SRC_NOT_SUPPORTED).  Rewrite every
+		// relative media src to an absolute file:// URL; the qsp: scheme carries
+		// LocalAccessAllowed, so a file: resource may be loaded from it, and Chromium
+		// then streams/loops/seeks the video with its native file loader.
+		if (!m_path.isEmpty()) {
+			const QString fileBase = QUrl::fromLocalFile(m_path).toString();
+			static const QStringList mediaExt = QStringList()
+				<< QStringLiteral("mp4") << QStringLiteral("m4v") << QStringLiteral("webm")
+				<< QStringLiteral("mkv") << QStringLiteral("ogv") << QStringLiteral("mov")
+				<< QStringLiteral("avi") << QStringLiteral("wmv") << QStringLiteral("mp3")
+				<< QStringLiteral("m4a") << QStringLiteral("wav") << QStringLiteral("ogg");
+			int scan = 0;
+			while ((scan = text.indexOf(QStringLiteral("src="), scan)) >= 0) {
+				int q1 = text.indexOf(QLatin1Char(34), scan);
+				if (q1 < 0) {
+					break;
+				}
+				int q2 = text.indexOf(QLatin1Char(34), q1 + 1);
+				if (q2 < 0) {
+					break;
+				}
+				const QString cur = text.mid(q1 + 1, q2 - q1 - 1);
+				const int dot = cur.lastIndexOf(QLatin1Char(46));
+				const QString ext = dot >= 0 ? cur.mid(dot + 1).toLower() : QString();
+				if (!cur.contains(QLatin1String("://")) && mediaExt.contains(ext)) {
+					const QString abs = fileBase + cur;
+					text.replace(q1 + 1, q2 - q1 - 1, abs);
+					scan = q1 + 1 + abs.length();
+				} else {
+					scan = q2 + 1;
+				}
+			}
+		}
+
 	} else {
 		text = str;
 	}
