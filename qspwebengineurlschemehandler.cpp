@@ -198,7 +198,6 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		} else {
 			buffer->write(file.readAll());
 		}
-			.arg(filePath).arg(QString::fromUtf8(contentType)).arg(hasRange ? 1 : 0).arg(totalSize));
 		buffer->close();
 		file.close();
 		request->reply(contentType, buffer);
