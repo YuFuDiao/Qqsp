@@ -85,7 +85,7 @@ jobs:
             -DUSE_INSTALLED_ONIGURUMA:BOOL=ON
           cmake --build build
 
-      - name: Patch QSP engine: let gs share the caller result
+      - name: "Patch QSP engine: let gs share the caller result"
         run: |
           $cmd = $null
           foreach ($c in @("python", "py", "python3")) {
