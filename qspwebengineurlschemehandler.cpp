@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QSet>
 #include <QMultiMap>
 #include <QUrl>
 
@@ -55,51 +56,6 @@ static QByteArray contentTypeForPath(const QString& filePath, const QByteArray& 
 	return detected;
 }
 
-// Chromium streams media using HTTP range requests. Answering with the whole file
-// (the pre-Qt6 behaviour) leaves <video> unable to buffer, seek or loop, since a
-// 200 response without ranges is not treated as a seekable media source. Reply
-// with the requested range plus the matching Content-Range / Accept-Ranges
-// headers; setAdditionalResponseHeaders() exists since Qt 6.6.
-static bool parseByteRange(const QMap<QByteArray, QByteArray>& headers, qint64 totalSize,
-                           qint64* outStart, qint64* outEnd)
-{
-	for (auto it = headers.constBegin(); it != headers.constEnd(); ++it) {
-		if (it.key().compare(QByteArrayLiteral("Range"), Qt::CaseInsensitive) != 0) {
-			continue;
-		}
-		QByteArray value = it.value().trimmed();
-		if (!value.startsWith(QByteArrayLiteral("bytes="))) {
-			continue;
-		}
-		value = value.mid(6);
-		const int dash = value.indexOf(char(45));
-		if (dash < 0) {
-			continue;
-		}
-		const QByteArray firstPart = value.left(dash);
-		const QByteArray lastPart = value.mid(dash + 1);
-		bool okStart = false;
-		bool okEnd = false;
-		qint64 start = firstPart.isEmpty() ? 0 : firstPart.toLongLong(&okStart);
-		qint64 end = lastPart.isEmpty() ? (totalSize - 1) : lastPart.toLongLong(&okEnd);
-		if (!firstPart.isEmpty() && !okStart) {
-			continue;
-		}
-		if (!lastPart.isEmpty() && !okEnd) {
-			continue;
-		}
-		if (end >= totalSize) {
-			end = totalSize - 1;
-		}
-		if (start > end || start >= totalSize) {
-			continue;
-		}
-		*outStart = start;
-		*outEnd = end;
-		return true;
-	}
-	return false;
-}
 void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* request)
 {
 	const QUrl url = request->requestUrl();
@@ -165,38 +121,43 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		tmpurl = QByteArray::fromPercentEncoding(tmpurl.toUtf8());
 		const QString path = QSPTools::GetCaseInsensitiveFilePath(m_path, tmpurl);
 		const QString filePath = m_path + path;
+		const QFileInfo fileInfo(filePath);
+		if (!fileInfo.exists() || !fileInfo.isFile()) {
+			buffer->close();
+			request->fail(QWebEngineUrlRequestJob::UrlNotFound);
+			return;
+		}
+
+		// Chromium only treats a media resource as seekable when it comes from a real
+		// streaming source. A scheme reply cannot be marked 206 Partial Content, and
+		// a plain 200 (the pre-Qt6 behaviour, which the old Chromium tolerated) is
+		// rejected by the current one, leaving <video> blank. Let Chromium load
+		// media straight from disk with its native file: loader instead; it then
+		// streams, seeks and loops by itself.
+		const QString suffix = fileInfo.suffix().toLower();
+		static const QSet<QString> mediaSuffixes = {
+			QStringLiteral("mp4"),  QStringLiteral("m4v"),  QStringLiteral("webm"),
+			QStringLiteral("mkv"),  QStringLiteral("ogv"),  QStringLiteral("avi"),
+			QStringLiteral("mov"),  QStringLiteral("wmv"),  QStringLiteral("mp3"),
+			QStringLiteral("m4a"),  QStringLiteral("wav"),  QStringLiteral("ogg"),
+			QStringLiteral("oga"),  QStringLiteral("flac"),
+		};
+		if (mediaSuffixes.contains(suffix)) {
+			buffer->close();
+			request->redirect(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
+			return;
+		}
+
 		QMimeDatabase db;
 		const QByteArray contentType =
 			contentTypeForPath(filePath, db.mimeTypeForFile(filePath).name().toUtf8());
-
 		QFile file(filePath);
 		if (!file.open(QIODevice::ReadOnly)) {
 			buffer->close();
 			request->fail(QWebEngineUrlRequestJob::UrlNotFound);
 			return;
 		}
-		const qint64 totalSize = file.size();
-		qint64 rangeStart = 0;
-		qint64 rangeEnd = totalSize > 0 ? totalSize - 1 : 0;
-		const bool hasRange =
-			parseByteRange(request->requestHeaders(), totalSize, &rangeStart, &rangeEnd);
-
-		QMultiMap<QByteArray, QByteArray> extraHeaders;
-		extraHeaders.insert(QByteArrayLiteral("Accept-Ranges"), QByteArrayLiteral("bytes"));
-		if (hasRange) {
-			QByteArray contentRange = QByteArrayLiteral("bytes ");
-			contentRange += QByteArray::number(rangeStart);
-			contentRange += QByteArrayLiteral("-");
-			contentRange += QByteArray::number(rangeEnd);
-			contentRange += QByteArrayLiteral("/");
-			contentRange += QByteArray::number(totalSize);
-			extraHeaders.insert(QByteArrayLiteral("Content-Range"), contentRange);
-		}
-		request->setAdditionalResponseHeaders(extraHeaders);
-
-		if (file.seek(rangeStart)) {
-			buffer->write(file.read(rangeEnd - rangeStart + 1));
-		}
+		buffer->write(file.readAll());
 		buffer->close();
 		file.close();
 		request->reply(contentType, buffer);
