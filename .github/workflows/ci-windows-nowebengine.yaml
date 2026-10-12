@@ -1,0 +1,123 @@
+name: CI - Windows (no WebEngine)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ci-windows-nowebengine.yaml'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ci:
+    name: Build (QspTextBox, no WebEngine)
+    runs-on: windows-latest
+    permissions:
+      actions: write
+
+    env:
+      vcpkg_path: "c:/vcpkg"
+      qsp_path: "${{ github.workspace }}/../qsp"
+      install_path: "${{ github.workspace }}/../install"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup devcmd
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install build tools
+        run: |
+          if ((Get-Command "ninja.exe" -ErrorAction SilentlyContinue) -eq $null)
+          {
+             choco install ninja
+          }
+          where.exe ninja
+          ninja --version
+
+      - name: Set variables for vcpkg
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', (process.env.ACTIONS_CACHE_URL || ''));
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', (process.env.ACTIONS_RUNTIME_TOKEN || ''));
+
+      - name: Install dependencies with vcpkg
+        run: |
+          $packages = `
+            "oniguruma"
+          ${{ env.vcpkg_path }}/vcpkg.exe install `
+            --binarysource="clear;x-gha,readwrite" `
+            --clean-after-build `
+            $packages
+
+      # No qtwebengine here on purpose: without it the player uses QspTextBox
+      # (QTextBrowser) plus VideoLabel/QMediaPlayer, and QtMultimedia's bundled
+      # FFmpeg decodes H.264, which the Qt WebEngine build cannot do.
+      - name: Install Qt (no WebEngine)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.9.2"
+          arch: win64_msvc2022_64
+          modules: qtmultimedia qtimageformats qtpositioning
+          cache: true
+
+      - name: Install qsp
+        run: |
+          git clone `
+            --depth 1 `
+            https://github.com/QSPFoundation/qsp.git `
+            ${{ env.qsp_path }}
+          cd ${{ env.qsp_path }}
+          cmake `
+            -B build `
+            -G "Ninja" `
+            -DBUILD_SHARED_LIBS=ON `
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo `
+            -DCMAKE_TOOLCHAIN_FILE="${{ env.vcpkg_path }}/scripts/buildsystems/vcpkg.cmake" `
+            -DUSE_INSTALLED_ONIGURUMA:BOOL=ON
+          cmake --build build
+
+      - name: Localize QSP engine error strings (zh_CN)
+        run: |
+          $cmd = $null
+          foreach ($c in @("python", "py", "python3")) {
+            $p = Get-Command $c -ErrorAction SilentlyContinue
+            if ($p) { & $p.Source --version *> $null; if ($LASTEXITCODE -eq 0) { $cmd = $p.Source; break } }
+          }
+          if (-not $cmd) { throw "no working python interpreter" }
+          & $cmd tools/patch_qsp_zh.py "${{ env.qsp_path }}"
+          if ($LASTEXITCODE -ne 0) { throw "QSP engine localization failed" }
+
+      - name: Build Qqsp
+        run: |
+          $qspCfg = Get-ChildItem -Path "${{ env.qsp_path }}" -Recurse -Filter "QspConfig.cmake" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($null -eq $qspCfg) { throw "QspConfig.cmake not found under qsp_path" }
+          Write-Host "Qsp_DIR = $($qspCfg.DirectoryName)"
+          cmake `
+            -B build `
+            -G "Ninja" `
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo `
+            -DCMAKE_INSTALL_PREFIX="${{ env.install_path }}" `
+            -DCMAKE_TOOLCHAIN_FILE="${{ env.vcpkg_path }}/scripts/buildsystems/vcpkg.cmake" `
+            -DQsp_DIR="$($qspCfg.DirectoryName)"
+          cmake --build build
+
+      - name: Prepare build artifacts
+        run: |
+          cmake --install build
+          cd build
+          cpack -G 7Z build
+          cd ..
+          mkdir upload
+          copy build/qqsp-*-win64.7z upload
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Qqsp-NoWebEngine-Windows-x64
+          path: upload
+
