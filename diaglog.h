@@ -8,8 +8,8 @@
 #include <QTextStream>
 
 // Diagnostic logging for the blank-render investigation.  Appends one line per
-// call to %TEMP%/qqsp_diag.log; opens and closes the file every time so calls
-// from different threads cannot corrupt each other.
+// call to TEMP/qqsp_diag.log; opens and closes the file every time so calls from
+// different threads cannot corrupt each other.
 inline void qqspDiag(const QString& msg)
 {
         QFile f(QDir::tempPath() + QStringLiteral("/qqsp_diag.log"));
@@ -17,8 +17,8 @@ inline void qqspDiag(const QString& msg)
                 return;
         }
         QTextStream s(&f);
-        s << QDateTime::currentDateTime().toString(QStringLiteral("hh:mm:ss.zzz")) << QStringLiteral(" ") << msg << QStringLiteral("
-");
+        s << QDateTime::currentDateTime().toString(QStringLiteral("hh:mm:ss.zzz"))
+          << QStringLiteral("  ") << msg << QStringLiteral("\n");
 }
 
 #endif
