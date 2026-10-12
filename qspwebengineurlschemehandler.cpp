@@ -9,6 +9,7 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QSet>
+#include <QMap>
 #include <QMultiMap>
 #include <QUrl>
 
@@ -132,26 +133,6 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 			return;
 		}
 
-		// Chromium only treats a media resource as seekable when it comes from a real
-		// streaming source. A scheme reply cannot be marked 206 Partial Content, and
-		// a plain 200 (the pre-Qt6 behaviour, which the old Chromium tolerated) is
-		// rejected by the current one, leaving <video> blank. Let Chromium load
-		// media straight from disk with its native file: loader instead; it then
-		// streams, seeks and loops by itself.
-		const QString suffix = fileInfo.suffix().toLower();
-		static const QSet<QString> mediaSuffixes = {
-			QStringLiteral("mp4"),  QStringLiteral("m4v"),  QStringLiteral("webm"),
-			QStringLiteral("mkv"),  QStringLiteral("ogv"),  QStringLiteral("avi"),
-			QStringLiteral("mov"),  QStringLiteral("wmv"),  QStringLiteral("mp3"),
-			QStringLiteral("m4a"),  QStringLiteral("wav"),  QStringLiteral("ogg"),
-			QStringLiteral("oga"),  QStringLiteral("flac"),
-		};
-		if (mediaSuffixes.contains(suffix)) {
-			buffer->close();
-			qqspDiag(QStringLiteral("REDIRECT file:/%1").arg(fileInfo.absoluteFilePath()));
-		request->redirect(QUrl::fromLocalFile(fileInfo.absoluteFilePath()));
-			return;
-		}
 
 		QMimeDatabase db;
 		const QByteArray contentType =
@@ -163,7 +144,68 @@ void QspWebEngineUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* reque
 		request->fail(QWebEngineUrlRequestJob::UrlNotFound);
 			return;
 		}
-		buffer->write(file.readAll());
+		// Serve the media bytes through the scheme handler.  A redirect to file:// is a
+		// cross-scheme navigation that Chromium refuses, and a plain 200 without range
+		// support is not treated as a seekable media source, which makes the element
+		// fail with MEDIA_ERR_SRC_NOT_SUPPORTED.  Honour the Range header in place and
+		// advertise range support, so Chromium can stream, seek and loop the video.
+		const qint64 totalSize = file.size();
+		qint64 rangeStart = 0;
+		qint64 rangeEnd = totalSize > 0 ? totalSize - 1 : 0;
+		bool hasRange = false;
+		const QMap<QByteArray, QByteArray> reqHeaders = request->requestHeaders();
+		for (auto it = reqHeaders.constBegin(); it != reqHeaders.constEnd(); ++it) {
+			if (it.key().compare(QByteArrayLiteral("Range"), Qt::CaseInsensitive) != 0) {
+				continue;
+			}
+			QByteArray rv = it.value().trimmed();
+			if (!rv.startsWith(QByteArrayLiteral("bytes="))) {
+				continue;
+			}
+			rv = rv.mid(6);
+			const int dash = rv.indexOf(char(45));
+			if (dash < 0) {
+				continue;
+			}
+			const QByteArray ra = rv.left(dash);
+			const QByteArray rb = rv.mid(dash + 1);
+			bool oka = false;
+			bool okb = false;
+			qint64 rs = ra.isEmpty() ? 0 : ra.toLongLong(&oka);
+			qint64 re = rb.isEmpty() ? (totalSize - 1) : rb.toLongLong(&okb);
+			if ((!ra.isEmpty() && !oka) || (!rb.isEmpty() && !okb)) {
+				continue;
+			}
+			if (re >= totalSize) {
+				re = totalSize - 1;
+			}
+			if (rs > re || rs >= totalSize) {
+				continue;
+			}
+			rangeStart = rs;
+			rangeEnd = re;
+			hasRange = true;
+			break;
+		}
+		QMultiMap<QByteArray, QByteArray> extra;
+		extra.insert(QByteArrayLiteral("Accept-Ranges"), QByteArrayLiteral("bytes"));
+		if (hasRange) {
+			QByteArray cr = QByteArrayLiteral("bytes ");
+			cr += QByteArray::number(rangeStart);
+			cr += QByteArrayLiteral("-");
+			cr += QByteArray::number(rangeEnd);
+			cr += QByteArrayLiteral("/");
+			cr += QByteArray::number(totalSize);
+			extra.insert(QByteArrayLiteral("Content-Range"), cr);
+		}
+		request->setAdditionalResponseHeaders(extra);
+		if (file.seek(rangeStart)) {
+			buffer->write(file.read(rangeEnd - rangeStart + 1));
+		} else {
+			buffer->write(file.readAll());
+		}
+		qqspDiag(QStringLiteral("SERVE %1 type=%2 range=%3 total=%4")
+			.arg(filePath).arg(QString::fromUtf8(contentType)).arg(hasRange ? 1 : 0).arg(totalSize));
 		buffer->close();
 		file.close();
 		request->reply(contentType, buffer);
