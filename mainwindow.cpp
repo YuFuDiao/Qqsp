@@ -5,8 +5,10 @@
 #include "debugger/debugwindow.h"
 #include "optionsdialog.h"
 #include "qspstr.h"
+#ifdef QT_WEBENGINEWIDGETS_LIB
 #include "webinspector.h"
 #include "webinspectorwindow.h"
+#endif
 
 #include <QApplication>
 #include <QAudioOutput>

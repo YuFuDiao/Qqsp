@@ -164,4 +164,7 @@ else()
     install(SCRIPT ${qt_deploy_script})
 endif()
 
-feature_summary(FATAL_ON_MISSING_REQUIRED_PACKAGES WHAT ALL)
+# WebEngine is optional: when it is absent the player falls back to
+# QspTextBox (QTextBrowser) with VideoLabel/QMediaPlayer and can then
+# decode H.264 through QtMultimedia's bundled FFmpeg.
+feature_summary(WHAT ALL)
