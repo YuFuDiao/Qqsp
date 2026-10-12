@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include "diaglog.h"
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -24,6 +25,7 @@ int main(int argc, char* argv[])
 	register_url_schemes();
 #endif
 
+	qqspDiag(QStringLiteral("=== main() reached === argc=%1").arg(argc));
 	QApplication a(argc, argv);
 	a.setApplicationName("Qqsp");
 	a.setOrganizationName("Qqsp");
