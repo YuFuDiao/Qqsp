@@ -8,6 +8,7 @@
 #include <QVideoWidget>
 
 class VideoLabel: public QVideoWidget {
+        Q_OBJECT
 signals:
 	void medialLoaded();
 

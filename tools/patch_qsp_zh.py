@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Localize QSP engine error descriptions inside the built qsp.dll.
+"""Localize the freshly built qsp.dll: Chinese error descriptions + a compatible
+reported engine version.
 
-Each description is a UTF-16LE literal terminated by NUL and consumed through
-QString construction, so a shorter Chinese replacement plus a fresh terminator
-is safe.  Descriptions the current engine no longer carries are reported and
-skipped; this step only fails when qsp.dll itself is missing.
+Error descriptions are UTF-16LE literals terminated by NUL and consumed through
+QString, so shorter Chinese plus a fresh terminator is safe.  The version the
+engine reports is what games compare against: Girl Life refuses to start above
+5.9.2, so we report 5.9.2 (what the vendor-recommended players use).
 """
 import os
 import sys
 
 APOS = chr(39)
 ALT = chr(0x2019)
+REPORTED_VERSION = "5.9.2"  # Girl Life gate: refuses to start above 5.9.2
+# NOTE: 5.9.4 is the engine's QSP_GAMEMIN_VER constant, never touch it.
+KNOWN_VERSIONS = ["5.9.6", "5.9.7", "5.9.8", "5.10.0", "5.9.5"]
+
 
 def find_dll(root):
     for dirpath, dirnames, filenames in os.walk(root):
@@ -18,6 +23,7 @@ def find_dll(root):
             if fn.lower() == "qsp.dll":
                 return os.path.join(dirpath, fn)
     return None
+
 
 def patch_one(data, en, zh):
     for variant in (en, en.replace(APOS, ALT)):
@@ -33,9 +39,23 @@ def patch_one(data, en, zh):
         return "ok"
     return "absent"
 
-def main():
-    root = sys.argv[1] if len(sys.argv) > 1 else "."
-    here = os.path.dirname(os.path.abspath(__file__))
+
+def patch_version(data):
+    new = REPORTED_VERSION.encode("utf-16-le")
+    for candidate in KNOWN_VERSIONS:
+        blob = candidate.encode("utf-16-le")
+        if len(blob) != len(new):
+            continue
+        if data.count(blob) == 1:
+            i = data.find(blob)
+            data[i:i + len(new)] = new
+            print("  version: reports %s (was %s)" % (REPORTED_VERSION, candidate))
+            return True
+    print("  version: no unique known version literal found")
+    return False
+
+
+def load_pairs(here):
     pairs = []
     with open(os.path.join(here, "qsp_err_zh.tsv"), encoding="utf-8") as f:
         for line in f:
@@ -44,6 +64,13 @@ def main():
                 continue
             en, zh = line.split("\t", 1)
             pairs.append((en, zh))
+    return pairs
+
+
+def main():
+    root = sys.argv[1] if len(sys.argv) > 1 else "."
+    here = os.path.dirname(os.path.abspath(__file__))
+    pairs = load_pairs(here)
     dll = find_dll(root)
     if not dll:
         raise SystemExit("FAILED: qsp.dll not found under " + root)
@@ -56,7 +83,10 @@ def main():
             ok += 1
         else:
             print("  %-9s %s" % (r, en))
+    patch_version(data)
     open(dll, "wb").write(bytes(data))
     print("patched", ok, "of", len(pairs))
 
-main()
+
+if __name__ == "__main__":
+    main()
